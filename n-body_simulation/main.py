@@ -1,4 +1,4 @@
-from uiMain.uiMain import UiMain
+from uiMain.simulation import Projections
 
 if __name__ == '__main__':
-    gui = UiMain(800, 800, -2500, 2500)
+    Projections().mainloop()
