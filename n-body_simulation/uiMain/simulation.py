@@ -1,12 +1,6 @@
-import random
-
 from glapp.PyOGApp import *
-from glapp.Square import *
-from glapp.Triangle import *
 from glapp.Axes import *
-from glapp.cube import *
 from glapp.LoadMesh import *
-from OpenGL.GLU import *
 
 vertex_shader = r'''
 #version 330 core
@@ -45,8 +39,6 @@ class Projections(PyOGApp):
         glOrtho(-2500, 2500, -2500, 2500, -2500, 2500)
         self.program_id = create_program(vertex_shader, fragment_shader)
         self.axes = Axes(self.program_id, pygame.Vector3(0, 0, 0))
-        self.teapot = LoadMesh("models/teapot.obj", self.program_id, scale=pygame.Vector3(5, 10, 5),
-                               rotation=Rotation(45, pygame.Vector3(1, 0, 1)))
         self.camera = Camera(self.program_id, self.screen_width, self.screen_height)
         glEnable(GL_DEPTH_TEST)
         for i in range(10):
@@ -55,7 +47,8 @@ class Projections(PyOGApp):
             z = random.randint(-250, 250)
             sc = random.randint(5, 20)
             self.sphere.append(LoadMesh("models/sphere.obj", self.program_id, location=pygame.Vector3(x, y, z),
-                                        scale=pygame.Vector3(sc, sc, sc)))
+                                        scale=pygame.Vector3(sc, sc, sc),
+                               move_rotation=Rotation(1, pygame.Vector3(0, 1, 0))))
 
     def camera_init(self):
         pass
@@ -67,5 +60,5 @@ class Projections(PyOGApp):
         self.axes.draw()
         for i in self.sphere:
             i.draw()
-        # self.teapot.draw()
+        self.teapot.draw()
         # glLineWidth(5)

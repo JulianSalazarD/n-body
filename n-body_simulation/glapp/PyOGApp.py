@@ -17,6 +17,7 @@ class PyOGApp:
         pygame.display.set_caption('Simulation')
         self.camera = None
         self.program_id = None
+        self.clock = pygame.time.Clock()
 
         # limits
         self.min_x = -2500
@@ -62,4 +63,5 @@ class PyOGApp:
             self.camera_init()
             self.display()
             pygame.display.flip()
+            #self.clock.tick(60)
         pygame.quit()
