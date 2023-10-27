@@ -10,14 +10,14 @@ class Camera:
         self.last_mouse = pygame.math.Vector2(0, 0)
         self.mouse_sensitivityX = 0.1
         self.mouse_sensitivityY = 0.1
-        self.key_sensitivity = 0.1
-        self.projection_mat = self.perspective_mat(60, w / h, 0.5, 100000)
+        self.key_sensitivity = 10
+        self.projection_mat = self.perspective_mat(60, w / h, 100, 100000)
         self.projection = Uniform("mat4", self.projection_mat)
         self.projection.find_variable(program_id, "projection_mat")
         self.screen_width = w
         self.screen_height = h
         self.program_id = program_id
-        self.transformation = translate(self.transformation, 0, 0, 250)
+        self.transformation = translate(self.transformation, 0, 0, 5000)
 
     def perspective_mat(self, angle_of_view, aspect_ratio, near_plane, far_plane):
         a = radians(angle_of_view)

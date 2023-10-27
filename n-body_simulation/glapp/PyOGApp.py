@@ -63,5 +63,5 @@ class PyOGApp:
             self.camera_init()
             self.display()
             pygame.display.flip()
-            #self.clock.tick(60)
+            self.clock.tick(30)
         pygame.quit()
