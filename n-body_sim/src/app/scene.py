@@ -24,7 +24,7 @@ class Scene:
 
         self.entities: dict[int, list[Entity]] = {
             ENTITY_TYPE["SPHERE"]: [
-                Sphere(position=[0, 0, 0], eulers=[0, 0, 0]),
+                Sphere(position=[0, 0, 0], eulers=[0, 0, 0], scale=[50, 50, 50]),
             ],
 
             ENTITY_TYPE["POINTLIGHT"]: [
@@ -43,7 +43,7 @@ class Scene:
         }
 
         self.camera = Camera(
-            position=[-200, 0, 0]
+            position=[-2000, 0, 0]
         )
 
     def update(self, dt: float) -> None:

@@ -24,6 +24,6 @@ class PointLight(Entity):
                 strength: strength of the light.
         """
 
-        super().__init__(position, eulers=[0, 0, 0])
+        super().__init__(position, eulers=[0, 0, 0], scale=[10, 10, 10])
         self.color = np.array(color, dtype=np.float32)
         self.strength = strength

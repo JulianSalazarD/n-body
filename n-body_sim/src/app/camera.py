@@ -19,7 +19,7 @@ class Camera(Entity):
                 position: the camera's position
         """
 
-        super().__init__(position, eulers=[0, 0, 0])
+        super().__init__(position, eulers=[0, 0, 0], scale=[1, 1, 1])
         self.update(0)
 
     def update(self, dt: float) -> None:

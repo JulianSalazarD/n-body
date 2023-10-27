@@ -80,7 +80,7 @@ class GraphicsEngine:
 
         projection_transform = pyrr.matrix44.create_perspective_projection(
             fovy=45, aspect=640 / 480,
-            near=0.1, far=200, dtype=np.float32
+            near=10, far=10000, dtype=np.float32
         )
         glUniformMatrix4fv(
             glGetUniformLocation(self.shader, "projection"),

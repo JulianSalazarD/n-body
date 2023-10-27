@@ -7,7 +7,7 @@ class Sphere(Entity):
     """
     __slots__ = tuple([])
 
-    def __init__(self, position: list[float], eulers: list[float]):
+    def __init__(self, position: list[float], eulers: list[float], scale: list[float]):
         """
             Initialize the cube.
 
@@ -19,7 +19,7 @@ class Sphere(Entity):
                         about each axis.
         """
 
-        super().__init__(position, eulers)
+        super().__init__(position, eulers, scale)
 
     def update(self, dt: float) -> None:
         """
@@ -34,3 +34,8 @@ class Sphere(Entity):
 
         if self.eulers[2] > 360:
             self.eulers[2] -= 360
+
+        self.update_object_position(self.position[0], self.position[1], self.position[2])
+
+    def update_object_position(self, x, y, z):
+        self.position = [x, y, z]

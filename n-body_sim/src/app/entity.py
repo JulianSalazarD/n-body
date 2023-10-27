@@ -8,7 +8,7 @@ class Entity:
     """
     __slots__ = ("position", "eulers", "scale")
 
-    def __init__(self, position: list[float], eulers: list[float]):
+    def __init__(self, position: list[float], eulers: list[float], scale: list[float]):
         """
             Initialize the entity.
 
@@ -22,6 +22,7 @@ class Entity:
 
         self.position = np.array(position, dtype=np.float32)
         self.eulers = np.array(eulers, dtype=np.float32)
+        self.scale = np.array(scale, dtype=np.float32)
 
     def update(self, dt: float) -> None:
         """
@@ -50,6 +51,11 @@ class Entity:
                 theta=np.radians(self.eulers[2]),
                 dtype=np.float32
             )
+        )
+
+        model_transform = pyrr.matrix44.multiply(
+            m1=model_transform,
+            m2=pyrr.matrix44.create_from_scale(self.scale)
         )
 
         return pyrr.matrix44.multiply(
