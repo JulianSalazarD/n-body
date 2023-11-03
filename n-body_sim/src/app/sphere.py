@@ -21,7 +21,7 @@ class Sphere(Entity):
 
         super().__init__(position, eulers, scale)
 
-    def update(self, dt: float) -> None:
+    def update(self, dt: float, pos=None) -> None:
         """
             Update the cube.
 
@@ -35,7 +35,8 @@ class Sphere(Entity):
         if self.eulers[2] > 360:
             self.eulers[2] -= 360
 
-        self.update_object_position(self.position[0], self.position[1], self.position[2])
+        if pos is not None:
+            self.update_object_position(pos[0], pos[1], pos[2])
 
     def update_object_position(self, x, y, z):
         self.position = [x, y, z]

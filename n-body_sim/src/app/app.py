@@ -24,7 +24,7 @@ class App:
         "current_time", "frames_rendered", "frametime",
         "_keys")
 
-    def __init__(self):
+    def __init__(self, bodies):
         """
             Initialize the program.
         """
@@ -35,7 +35,7 @@ class App:
 
         self._set_up_input_systems()
 
-        self._create_assets()
+        self._create_assets(bodies)
 
     def _set_up_glfw(self) -> None:
         """
@@ -108,14 +108,14 @@ class App:
 
         self._keys[key] = state
 
-    def _create_assets(self) -> None:
+    def _create_assets(self, bodies) -> None:
         """
             Create all of the assets needed by the program.
         """
 
         self.renderer = GraphicsEngine()
 
-        self.scene = Scene()
+        self.scene = Scene(bodies)
 
     def run(self) -> None:
         """

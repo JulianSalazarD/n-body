@@ -22,7 +22,7 @@ class Camera(Entity):
         super().__init__(position, eulers=[0, 0, 0], scale=[1, 1, 1])
         self.update(0)
 
-    def update(self, dt: float) -> None:
+    def update(self, dt: float, pos=None) -> None:
         """
             Update the camera.
 

@@ -11,13 +11,13 @@ class Camera:
         self.mouse_sensitivityX = 0.1
         self.mouse_sensitivityY = 0.1
         self.key_sensitivity = 10
-        self.projection_mat = self.perspective_mat(60, w / h, 100, 100000)
+        self.projection_mat = self.perspective_mat(60, w / h, 1, 100000)
         self.projection = Uniform("mat4", self.projection_mat)
         self.projection.find_variable(program_id, "projection_mat")
         self.screen_width = w
         self.screen_height = h
         self.program_id = program_id
-        self.transformation = translate(self.transformation, 0, 0, 5000)
+        self.transformation = translate(self.transformation, 0, 0, 2500)
 
     def perspective_mat(self, angle_of_view, aspect_ratio, near_plane, far_plane):
         a = radians(angle_of_view)
@@ -50,13 +50,13 @@ class Camera:
         self.rotate(mouse_change.x * self.mouse_sensitivityX, mouse_change.y * self.mouse_sensitivityY)
 
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_DOWN]:
+        if keys[pygame.K_s]:
             self.transformation = translate(self.transformation, 0, 0, self.key_sensitivity)
-        if keys[pygame.K_UP]:
+        if keys[pygame.K_w]:
             self.transformation = translate(self.transformation, 0, 0, -self.key_sensitivity)
-        if keys[pygame.K_RIGHT]:
+        if keys[pygame.K_d]:
             self.transformation = translate(self.transformation, self.key_sensitivity, 0, 0)
-        if keys[pygame.K_LEFT]:
+        if keys[pygame.K_a]:
             self.transformation = translate(self.transformation, -self.key_sensitivity, 0, 0)
 
         self.projection.load()

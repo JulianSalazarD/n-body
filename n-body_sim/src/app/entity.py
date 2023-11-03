@@ -24,7 +24,7 @@ class Entity:
         self.eulers = np.array(eulers, dtype=np.float32)
         self.scale = np.array(scale, dtype=np.float32)
 
-    def update(self, dt: float) -> None:
+    def update(self, dt: float, pos=None) -> None:
         """
             Update the object, this is meant to be implemented by
             objects extending this class.
@@ -53,14 +53,24 @@ class Entity:
             )
         )
 
-        model_transform = pyrr.matrix44.multiply(
-            m1=model_transform,
-            m2=pyrr.matrix44.create_from_scale(self.scale)
-        )
-
         return pyrr.matrix44.multiply(
             m1=model_transform,
             m2=pyrr.matrix44.create_from_translation(
                 vec=np.array(self.position), dtype=np.float32
             )
         )
+
+        return pyrr.matrix44.multiply(
+            m1=model_transform,
+            m2=pyrr.matrix44.create_from_scale(self.scale)
+        )
+
+
+''' 
+        return pyrr.matrix44.multiply(
+            m1=model_transform,
+            m2=pyrr.matrix44.create_from_translation(
+                vec=np.array(self.position), dtype=np.float32
+            )
+        )
+'''

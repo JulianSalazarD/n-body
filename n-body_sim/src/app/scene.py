@@ -10,21 +10,26 @@ ENTITY_TYPE = {
     "POINTLIGHT": 1,
 }
 
+c = 1875e5
+
 
 class Scene:
     """
         Manages all objects and coordinates their interactions.
     """
-    __slots__ = ("entities", "camera")
+    __slots__ = ("entities", "camera", "x", "y")
 
-    def __init__(self):
+    def __init__(self, bodies):
         """
             Initialize the scene.
         """
-
+        self.x = bodies
+        # print([bodies[1].position[0] / c, bodies[1].position[1] / c, bodies[1].position[2] / c])
+        self.y = [[bodies[1].position[0] / c, bodies[1].position[1] / c, bodies[1].position[2] / c]]
         self.entities: dict[int, list[Entity]] = {
             ENTITY_TYPE["SPHERE"]: [
-                Sphere(position=[0, 0, 0], eulers=[0, 0, 0], scale=[50, 50, 50]),
+                Sphere(position=self.y[0],
+                       eulers=[0, 0, 0], scale=[50, 50, 50]),
             ],
 
             ENTITY_TYPE["POINTLIGHT"]: [
@@ -43,7 +48,7 @@ class Scene:
         }
 
         self.camera = Camera(
-            position=[-2000, 0, 0]
+            position=[-200, 0, 0]
         )
 
     def update(self, dt: float) -> None:
@@ -55,9 +60,19 @@ class Scene:
                 dt: framerate correction factor
         """
 
-        for entities in self.entities.values():
-            for entity in entities:
-                entity.update(dt)
+        # for entities in self.entities.values():
+        #    for entity in entities:
+        #        entity.update(dt)
+        entities = self.entities[0]
+        print(self.y[0])
+        # self.y[0] = [self.y[0][0]-0.1, 0, 0]
+        for entity in entities:
+            entity.update(dt, self.y[0])
+        self.update_position()
+        self.update_window()
+        entities = self.entities[1]
+        for entity in entities:
+            entity.update(dt)
 
         self.camera.update(dt)
 
@@ -76,3 +91,17 @@ class Scene:
         """
 
         self.camera.spin(d_eulers)
+
+    def update_position(self):
+        for body in self.x:
+            body.euler_method(self.x, 60. * 60. * 24)
+            # if body.radius == 30: print(body.position)
+
+    def update_window(self):
+        # for sphere in range(len(self.sphere)):
+        #    self.sphere[sphere].set_move_translate(pygame.Vector3(-self.positions[sphere][0],
+        # -self.positions[sphere][1],
+        # -self.positions[sphere][2]))
+        # self.positions[body] = -self.positions[body]
+        # print(self.positions[body])
+        self.y[0] = [self.x[0].position[0] / c, self.x[0].position[1] / c, self.x[0].position[2] / c]
