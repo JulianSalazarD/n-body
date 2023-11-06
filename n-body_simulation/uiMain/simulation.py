@@ -33,18 +33,18 @@ void main(){
 class Projections(PyOGApp):
     SCALE = 50 / sp.constants.astronomical_unit
 
-    def __init__(self, data):
-        super().__init__(200, 20, 1000, 700)
+    def __init__(self, data, data_color):
+        super().__init__(1000, 700)
         self.axes = None
         self.teapot = None
         self.data = data
+        self.data_color = data_color
         self.sphere = []
         self.positions = []
         self.max_r = 20
         self.min_r = 10
 
     def initialise(self):
-        # glOrtho(-2500, 2500, -2500, 2500, -2500, 2500)
         self.program_id = create_program(vertex_shader, fragment_shader)
         self.axes = Axes(self.program_id, pygame.Vector3(0, 0, 0))
         self.camera = Camera(self.program_id, self.screen_width, self.screen_height)
@@ -66,18 +66,15 @@ class Projections(PyOGApp):
         # glLineWidth(1)
 
     def build_sphere(self):
-        min_radius = min(self.data, key=lambda body: body.radius).radius
-        max_radius = max(self.data, key=lambda body: body.radius).radius
-        for body in self.data:
-            # sc = ((body.radius - min_radius) * (5. - 4.)) / ((max_radius - min_radius) + 4.)
-            sc = body.radius
-            position = body.position.copy() * Projections.SCALE
+        for i in range(len(self.data)):
+            sc = self.data[i].radius
+            position = self.data[i].position.copy() * Projections.SCALE
             self.positions.append(position)
-            print(position, sc)
             self.sphere.append(LoadMesh("models/sphere.obj", self.program_id,
                                         location=pygame.Vector3(position[0], position[1], position[2]),
                                         scale=pygame.Vector3(sc, sc, sc),
-                                        move_rotation=Rotation(1, pygame.Vector3(0, 1, 0))))
+                                        move_rotation=Rotation(1, pygame.Vector3(0, 1, 0)),
+                                        color=self.data_color[i]))
 
     def update_position(self):
         for body in self.data:
@@ -87,7 +84,6 @@ class Projections(PyOGApp):
         for body in range(len(self.data)):
             self.positions[body] = self.data[body].position.copy() * Projections.SCALE
         for sphere in range(len(self.sphere)):
-            print(self.positions[sphere])
             self.sphere[sphere].set_move_translate(pygame.Vector3(self.positions[sphere][0],
                                                                   self.positions[sphere][1],
                                                                   self.positions[sphere][2]))

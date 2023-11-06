@@ -35,6 +35,3 @@ class Body2:
     def gravitational_acceleration(self, body):
         diff = body.position - self.position
         return sp.constants.G * body.mass * (diff / (np.linalg.norm(diff) ** 3))
-
-    def circular(self):
-        pass

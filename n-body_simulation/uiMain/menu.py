@@ -1,5 +1,6 @@
 import tkinter as tk
 from functools import partial
+from tkinter import colorchooser
 
 import numpy as np
 import scipy as sp
@@ -7,11 +8,11 @@ import scipy as sp
 from sim2d.body2 import Body2
 from sim3d.body import Body
 from uiMain.simulation import Projections
-from uiMain.simulation2 import new_color, Simulation
+from uiMain.simulation2 import Simulation
 
 AU = sp.constants.astronomical_unit
 SUN_MASS = 1.9891E30
-SUN_RADIUS = 20  # 696340
+SUN_RADIUS = 696340
 xVEL = 1000
 
 
@@ -28,6 +29,7 @@ class Menu(tk.Tk):
         self.data = []
         self.modelo()
         self.default_data()
+        self.color = None
 
     def modelo(self):
         self.clear_w()
@@ -118,6 +120,12 @@ class Menu(tk.Tk):
         tk.Label(self.frame, text="x1000 m/s", bg=self.frame["bg"],
                  font=("Courier", 10)).place(x=450, y=260)
 
+        # color
+        color_button = tk.Button(self.frame, text="color", command=self.choose_color)
+        color_button.place(x=200, y=350)
+        self.color = tk.Frame(self.frame, height=20, width=20)
+        self.color.place(x=450, y=350)
+        self.color.configure(bg="#FFFFFF")
         if i < len(self.data):
             radius_entry.insert(0, str(self.data[i]["radius"]))
             mass_entry.insert(0, str(self.data[i]["mass"]))
@@ -127,6 +135,7 @@ class Menu(tk.Tk):
             velx_entry.insert(0, str(self.data[i]["velocity"][0]))
             vely_entry.insert(0, str(self.data[i]["velocity"][1]))
             velz_entry.insert(0, str(self.data[i]["velocity"][2]))
+            self.color.configure(bg=Menu.rgb_to_hex(self.data[i]["color"]))
 
         if self.model == "2D":
             posz_entry.config(state=tk.DISABLED)
@@ -153,7 +162,8 @@ class Menu(tk.Tk):
                                   float(planet_data[2][2].get())),
                      "velocity": (float(planet_data[3][0].get()),
                                   float(planet_data[3][1].get()),
-                                  float(planet_data[3][2].get()))}
+                                  float(planet_data[3][2].get())),
+                     "color": Menu.hex_to_rgb(self.color["bg"])}
         if i < len(self.data):
             self.data[i] = body_data
         else:
@@ -171,23 +181,34 @@ class Menu(tk.Tk):
 
     def start_simulation(self):
         data = []
+        r_max = max(self.data, key=lambda x: x["radius"])["radius"]
+        r_min = min(self.data, key=lambda x: x["radius"])["radius"]
+
         if self.model == "3D":
-            for planet in self.data:
-                data.append(Body(planet["radius"] * SUN_RADIUS,
-                                 planet["mass"] * SUN_MASS,
-                                 np.array([planet["position"][0] * AU,
-                                           planet["position"][1] * AU,
-                                           planet["position"][2] * AU]),
-                                 np.array([planet["velocity"][0] * xVEL,
-                                           planet["velocity"][1] * xVEL,
-                                           planet["velocity"][2] * xVEL]))
+            data_color = []
+            for i in range(len(self.data)):
+                self.data[i]["radius"] = ((self.data[i]["radius"] - r_min) / (r_max - r_min)) * (20-10) + 10
+                print(self.data[i]["radius"])
+                data.append(Body(self.data[i]["radius"],
+                                 self.data[i]["mass"] * SUN_MASS,
+                                 np.array([self.data[i]["position"][0] * AU,
+                                           self.data[i]["position"][1] * AU,
+                                           self.data[i]["position"][2] * AU]),
+                                 np.array([self.data[i]["velocity"][0] * xVEL,
+                                           self.data[i]["velocity"][1] * xVEL,
+                                           self.data[i]["velocity"][2] * xVEL]))
                             )
+                data_color.append((self.data[i]["color"][0] / 255,
+                                   self.data[i]["color"][1] / 255,
+                                   self.data[i]["color"][2] / 255))
             self.destroy()
-            Projections(data).mainloop()
+            Projections(data, data_color).mainloop()
 
         else:
             for planet in self.data:
-                data.append(Body2(planet["radius"] * SUN_RADIUS,
+                planet["radius"] = ((planet["radius"] - r_min) / (r_max - r_min)) * (20 - 10) + 10
+                print(planet["radius"])
+                data.append(Body2(planet["radius"],
                                   planet["mass"] * SUN_MASS,
                                   np.array([planet["position"][0] * AU,
                                             planet["position"][1] * AU,
@@ -195,7 +216,7 @@ class Menu(tk.Tk):
                                   np.array([planet["velocity"][0] * xVEL,
                                             planet["velocity"][1] * xVEL,
                                             planet["velocity"][2] * xVEL]),
-                                  new_color())
+                                  planet["color"])
                             )
             self.destroy()
             Simulation(data).mainloop()
@@ -206,21 +227,21 @@ class Menu(tk.Tk):
 
     def default_data(self):
         # sun
-        self.data.append({"radius": 1, "mass": 1, "position": (0, 0, 0), "velocity": (0, 0, 0)})
+        self.data.append({"radius": 1, "mass": 1, "position": (0, 0, 0), "velocity": (0, 0, 0), "color": (255, 255, 0)})
         # earth
-        self.data.append({"radius": 15 / SUN_RADIUS, "mass": 5.972E24 / SUN_MASS, "position": (1, 0, 0),
-                          "velocity": (0, 2.9E4 / xVEL, 0)})
+        self.data.append({"radius": 6371/SUN_RADIUS, "mass": 5.972E24 / SUN_MASS, "position": (1, 0, 0),
+                          "velocity": (0, 2.9E4 / xVEL, 0), "color": (0, 255, 255)})
         # mars
         self.data.append(
-            {"radius": 16 / SUN_RADIUS, "mass": 6.39 * 10 ** 23 / SUN_MASS, "position": (-1.524, 0, 0),
-             "velocity": (0, 24.077, 0)})
+            {"radius": 3389.5 / SUN_RADIUS, "mass": 6.39 * 10 ** 23 / SUN_MASS, "position": (-1.524, 0, 0),
+             "velocity": (0, 24.077, 0), "color": (223, 94, 41)})
         # mercury
         self.data.append(
-            {"radius": 10 / SUN_RADIUS, "mass": 3.30 * 10 ** 23 / SUN_MASS, "position": (0.387, 0, 0),
-             "velocity": (0, -47.4, 0)})
+            {"radius": 2440 / SUN_RADIUS, "mass": 3.30 * 10 ** 23 / SUN_MASS, "position": (0.387, 0, 0),
+             "velocity": (0, -47.4, 0), "color": (156, 130, 114)})
         # venus
-        self.data.append({"radius": 12 / SUN_RADIUS, "mass": 4.8685 * 10 ** 24 / SUN_MASS, "position": (0.723, 0, 0),
-                          "velocity": (0, -35.02, 0)})
+        self.data.append({"radius": 6051.8 / SUN_RADIUS, "mass": 4.8685 * 10 ** 24 / SUN_MASS, "position": (0.723, 0, 0),
+                          "velocity": (0, -35.02, 0), "color": (215, 103, 83)})
 
     def init(self):
         self.clear_w()
@@ -231,32 +252,15 @@ class Menu(tk.Tk):
         self.modelo()
         self.default_data()
 
+    def choose_color(self):
+        color = colorchooser.askcolor()[1]
+        self.color.configure(bg=color)
 
-"""
-from tkinter import colorchooser
+    @staticmethod
+    def hex_to_rgb(hex_color):
+        hex_color = hex_color.lstrip('#')
+        return tuple(int(hex_color[i:i + 2], 16) for i in (0, 2, 4))
 
-# earth
-# mars
-# mercury
-# venus
-
-
-def seleccionar_color():
-    color = colorchooser.askcolor()[1]
-    if color:
-        seleccion.config(bg=color)
-
-
-ventana = tk.Tk()
-ventana.title("Selector de Color")
-
-# Botón para abrir el selector de color
-boton = tk.Button(ventana, text="Seleccionar Color", command=seleccionar_color)
-boton.pack(pady=10)
-
-# Etiqueta que muestra el color seleccionado
-seleccion = tk.Label(ventana, text="Color seleccionado", width=20, height=5)
-seleccion.pack(pady=10)
-
-ventana.mainloop()
-"""
+    @staticmethod
+    def rgb_to_hex(rgb_color):
+        return '#{:02X}{:02X}{:02X}'.format(rgb_color[0], rgb_color[1], rgb_color[2])
