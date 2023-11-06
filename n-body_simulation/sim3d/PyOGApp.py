@@ -53,6 +53,10 @@ class PyOGApp:
                         self.view_scale(1)
                     if keys[pygame.K_DOWN]:
                         self.view_scale(0)
+                    if keys[pygame.K_RIGHT]:
+                        self.update_speed(1)
+                    if keys[pygame.K_LEFT]:
+                        self.update_speed(0)
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if event.button == 4:
                         self.view_scale(1)
@@ -66,4 +70,8 @@ class PyOGApp:
         pygame.quit()
 
     def view_scale(self, i):
+        pass
+
+    @classmethod
+    def update_speed(cls, i):
         pass

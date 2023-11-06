@@ -33,6 +33,7 @@ void main(){
 class Projections(PyOGApp):
     view = 50
     SCALE = view / sp.constants.astronomical_unit
+    SPEED = 24
 
     def __init__(self, data, data_color):
         super().__init__(1000, 700)
@@ -73,6 +74,13 @@ class Projections(PyOGApp):
         elif i == 0 and Projections.view > 10:
             Projections.view -= 5
 
+
+    def update_speed(self, i):
+        if i == 1 and Projections.SPEED < 60:
+            Projections.SPEED += 4
+        elif i == 0 and Projections.SPEED > 4:
+            Projections.SPEED -= 4
+
     def build_sphere(self):
         for i in range(len(self.data)):
             sc = self.data[i].radius
@@ -86,7 +94,7 @@ class Projections(PyOGApp):
 
     def update_position(self):
         for body in self.data:
-            body.euler_method(self.data, 60. * 60. * 24)
+            body.euler_method(self.data, 60. * 60. * Projections.SPEED)
 
     def update_window(self):
         for body in range(len(self.data)):

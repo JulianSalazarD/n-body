@@ -5,6 +5,7 @@ import scipy as sp
 class Simulation:
     view = 200
     SCALE = view / sp.constants.astronomical_unit
+    SPEED = 24
 
     def __init__(self, data):
         self.data = data
@@ -43,6 +44,10 @@ class Simulation:
                 if event.type == pygame.QUIT:
                     run = False
                 keys = pygame.key.get_pressed()
+                if keys[pygame.K_RIGHT] and Simulation.SPEED < 60:
+                    Simulation.SPEED += 4
+                if keys[pygame.K_LEFT] and Simulation.SPEED > 4:
+                    Simulation.SPEED -= 4
                 if keys[pygame.K_UP] and Simulation.view < 460:
                     Simulation.view += 5
                 if keys[pygame.K_DOWN] and Simulation.view > 20:
@@ -56,7 +61,7 @@ class Simulation:
 
             for planet in self.data:
                 self.draw(planet)
-                planet.euler_method(self.data, 60. * 60. * 24)
+                planet.euler_method(self.data, 60. * 60. * Simulation.SPEED)
             pygame.display.update()
 
         pygame.quit()
