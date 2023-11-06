@@ -44,7 +44,6 @@ class Camera:
 
         mouse_pos = pygame.mouse.get_pos()
         mouse_change = self.last_mouse - pygame.math.Vector2(mouse_pos)
-        # print("Mouse Change: " + str(mouse_change[0]) + ", " + str(mouse_change[1]))
         pygame.mouse.set_pos(self.screen_width / 2, self.screen_height / 2)
         self.last_mouse = pygame.mouse.get_pos()
         self.rotate(mouse_change.x * self.mouse_sensitivityX, mouse_change.y * self.mouse_sensitivityY)

@@ -137,10 +137,6 @@ class Menu(tk.Tk):
             velz_entry.insert(0, str(self.data[i]["velocity"][2]))
             self.color.configure(bg=Menu.rgb_to_hex(self.data[i]["color"]))
 
-        if self.model == "2D":
-            posz_entry.config(state=tk.DISABLED)
-            velz_entry.config(state=tk.DISABLED)
-
         planet_data = [radius_entry, mass_entry, (posx_entry, posy_entry, posz_entry),
                        (velx_entry, vely_entry, velz_entry)]
 
@@ -152,7 +148,8 @@ class Menu(tk.Tk):
     def get_back_data(self, i):
         if i == 0:
             self.init()
-        self.planets_data(self.n_bodies - i + 1)
+        else:
+            self.planets_data(self.n_bodies - i + 1)
 
     def get_body_data(self, planet_data, i):
         body_data = {"radius": float(planet_data[0].get()),
@@ -188,7 +185,6 @@ class Menu(tk.Tk):
             data_color = []
             for i in range(len(self.data)):
                 self.data[i]["radius"] = ((self.data[i]["radius"] - r_min) / (r_max - r_min)) * (20-10) + 10
-                print(self.data[i]["radius"])
                 data.append(Body(self.data[i]["radius"],
                                  self.data[i]["mass"] * SUN_MASS,
                                  np.array([self.data[i]["position"][0] * AU,
@@ -207,7 +203,6 @@ class Menu(tk.Tk):
         else:
             for planet in self.data:
                 planet["radius"] = ((planet["radius"] - r_min) / (r_max - r_min)) * (20 - 10) + 10
-                print(planet["radius"])
                 data.append(Body2(planet["radius"],
                                   planet["mass"] * SUN_MASS,
                                   np.array([planet["position"][0] * AU,
@@ -240,8 +235,8 @@ class Menu(tk.Tk):
             {"radius": 2440 / SUN_RADIUS, "mass": 3.30 * 10 ** 23 / SUN_MASS, "position": (0.387, 0, 0),
              "velocity": (0, -47.4, 0), "color": (156, 130, 114)})
         # venus
-        self.data.append({"radius": 6051.8 / SUN_RADIUS, "mass": 4.8685 * 10 ** 24 / SUN_MASS, "position": (0.723, 0, 0),
-                          "velocity": (0, -35.02, 0), "color": (215, 103, 83)})
+        self.data.append({"radius": 6051.8 / SUN_RADIUS, "mass": 4.8685 * 10 ** 24 / SUN_MASS,
+                          "position": (0.723, 0, 0), "velocity": (0, -35.02, 0), "color": (215, 103, 83)})
 
     def init(self):
         self.clear_w()
