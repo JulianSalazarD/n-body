@@ -31,7 +31,8 @@ void main(){
 
 
 class Projections(PyOGApp):
-    SCALE = 50 / sp.constants.astronomical_unit
+    view = 50
+    SCALE = view / sp.constants.astronomical_unit
 
     def __init__(self, data, data_color):
         super().__init__(1000, 700)
@@ -61,9 +62,16 @@ class Projections(PyOGApp):
         self.axes.draw()
         for i in self.sphere:
             i.draw()
+        Projections.SCALE = Projections.view / sp.constants.astronomical_unit
         self.update_position()
         self.update_window()
         # glLineWidth(1)
+
+    def view_scale(self, i):
+        if i == 1 and Projections.view < 500:
+            Projections.view += 5
+        elif i == 0 and Projections.view > 10:
+            Projections.view -= 5
 
     def build_sphere(self):
         for i in range(len(self.data)):

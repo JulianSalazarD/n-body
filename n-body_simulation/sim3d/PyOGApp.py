@@ -45,8 +45,25 @@ class PyOGApp:
                     if event.key == K_SPACE:
                         pygame.mouse.set_visible(False)
                         pygame.event.set_grab(True)
+                    if event.key == K_RETURN:
+                        pygame.mouse.set_visible(False)
+                        pygame.event.set_grab(True)
+                    keys = pygame.key.get_pressed()
+                    if keys[pygame.K_UP]:
+                        self.view_scale(1)
+                    if keys[pygame.K_DOWN]:
+                        self.view_scale(0)
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if event.button == 4:
+                        self.view_scale(1)
+                    elif event.button == 5:
+                        self.view_scale(0)
+
             self.camera_init()
             self.display()
             pygame.display.flip()
             self.clock.tick(30)
         pygame.quit()
+
+    def view_scale(self, i):
+        pass

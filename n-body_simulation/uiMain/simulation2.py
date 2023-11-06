@@ -1,9 +1,6 @@
 import pygame
 import scipy as sp
 
-BLACK = (0, 0, 0)
-WHITE = (255, 255, 255)
-
 
 class Simulation:
     view = 200
