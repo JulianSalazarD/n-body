@@ -1,7 +1,7 @@
 import tkinter as tk
 from functools import partial
 from random import randint
-from tkinter import colorchooser
+from tkinter import colorchooser, messagebox
 from PIL import Image, ImageTk
 
 import numpy as np
@@ -68,7 +68,8 @@ class Menu(tk.Tk):
         bodies.insert(0, "50")
         bodies.place(x=280, y=185)
         tk.Button(self.frame, text="back", command=self.option_3d, height=2, width=5).place(x=10, y=450)
-        tk.Button(self.frame, text="next", command=self.random_bodies, height=2, width=5).place(x=645, y=450)
+        tk.Button(self.frame, text="next", command=partial(self.random_bodies, bodies),
+                  height=2, width=5).place(x=645, y=450)
 
     def bodies(self):
         self.clear_w()
@@ -85,14 +86,19 @@ class Menu(tk.Tk):
                   height=2, width=5).place(x=645, y=450)
 
     def get_body_numbers(self, bodies):
-        self.n_bodies = int(bodies.get())
-        if self.n_bodies < 0:
-            self.modelo()
-        elif self.n_bodies < 5:
-            self.data = self.data[:self.n_bodies]
-            self.planets_data(self.n_bodies)
-        else:
-            self.planets_data(self.n_bodies)
+        try:
+            self.n_bodies = int(bodies.get())
+            if self.n_bodies < 0:
+                self.modelo()
+            elif self.n_bodies < 5:
+                self.data = self.data[:self.n_bodies]
+                self.planets_data(self.n_bodies)
+            else:
+                self.planets_data(self.n_bodies)
+        except ValueError:
+            msg = "Ingresar todos los campos debidamente"
+            messagebox.showerror("ValueError", msg)
+            self.bodies()
 
     def planets_data(self, n_bodies):
         self.clear_w()
@@ -181,21 +187,28 @@ class Menu(tk.Tk):
             self.planets_data(self.n_bodies - i + 1)
 
     def get_body_data(self, planet_data, i):
-        body_data = {"radius": float(planet_data[0].get()),
-                     "mass": float(planet_data[1].get()),
-                     "position": (float(planet_data[2][0].get()),
-                                  float(planet_data[2][1].get()),
-                                  float(planet_data[2][2].get())),
-                     "velocity": (float(planet_data[3][0].get()),
-                                  float(planet_data[3][1].get()),
-                                  float(planet_data[3][2].get())),
-                     "color": Menu.hex_to_rgb(self.color["bg"])}
-        if i < len(self.data):
-            self.data[i] = body_data
-        else:
-            self.data.append(body_data)
+        # msg = "Ingresas todos los campos"
+        # messagebox.showerror("ValueError", msg)
+        try:
+            body_data = {"radius": float(planet_data[0].get()),
+                         "mass": float(planet_data[1].get()),
+                         "position": (float(planet_data[2][0].get()),
+                                      float(planet_data[2][1].get()),
+                                      float(planet_data[2][2].get())),
+                         "velocity": (float(planet_data[3][0].get()),
+                                      float(planet_data[3][1].get()),
+                                      float(planet_data[3][2].get())),
+                         "color": Menu.hex_to_rgb(self.color["bg"])}
+            if i < len(self.data):
+                self.data[i] = body_data
+            else:
+                self.data.append(body_data)
 
-        self.planets_data(self.n_bodies - i - 1)
+            self.planets_data(self.n_bodies - i - 1)
+        except ValueError:
+            msg = "Ingresar todos los campos debidamente"
+            messagebox.showerror("ValueError", msg)
+            self.planets_data(self.n_bodies - i)
 
     def confirm(self):
         self.clear_w()
@@ -293,25 +306,32 @@ class Menu(tk.Tk):
     def rgb_to_hex(rgb_color):
         return '#{:02X}{:02X}{:02X}'.format(rgb_color[0], rgb_color[1], rgb_color[2])
 
-    def random_bodies(self):
-        max_distance = 500
-        min_distance = -500
-        max_vel = 20
-        min_vel = -20
-        self.data.clear()
-        print(len(self.data), " Longitud")
-        for _ in range(80):
-            self.data.append({"radius": 1, "mass": randint(1, 100000) / 100000,
-                              "position": (randint(min_distance, max_distance) / 100,
-                                           randint(min_distance, max_distance) / 100,
-                                           randint(min_distance, max_distance) / 100),
-                              "velocity": (float(randint(min_vel, max_vel)),
-                                           float(randint(min_vel, max_vel)),
-                                           float(randint(min_vel, max_vel))),
-                              "color": (255, 255, 255)})
+    def random_bodies(self, bodies):
+        try:
+            self.n_bodies = int(bodies.get())
+            max_distance = 500
+            min_distance = -500
+            max_vel = 20
+            min_vel = -20
+            self.data.clear()
+            print(len(self.data), " Longitud")
+            for _ in range(self.n_bodies):
+                self.data.append({"radius": 1, "mass": randint(1, 100000) / 100000,
+                                  "position": (randint(min_distance, max_distance) / 100,
+                                               randint(min_distance, max_distance) / 100,
+                                               randint(min_distance, max_distance) / 100),
+                                  "velocity": (float(randint(min_vel, max_vel)),
+                                               float(randint(min_vel, max_vel)),
+                                               float(randint(min_vel, max_vel))),
+                                  "color": (255, 255, 255)})
 
-        self.model = "3D"
-        self.start_simulation()
+            self.model = "3D"
+            self.start_simulation()
+            
+        except ValueError:
+            msg = "Ingresar todos los campos debidamente"
+            messagebox.showerror("ValueError", msg)
+            self.random_configure()
 
     def background(self):
         path = "models/background.jpg"
