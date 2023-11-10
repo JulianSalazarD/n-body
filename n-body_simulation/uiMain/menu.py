@@ -1,5 +1,6 @@
 import tkinter as tk
 from functools import partial
+from random import randint
 from tkinter import colorchooser
 
 import numpy as np
@@ -27,8 +28,10 @@ class Menu(tk.Tk):
         self.model = None
         self.n_bodies = None
         self.data = []
+        self.color = None
         self.modelo()
         self.default_data()
+        # self.ramdom_bodies()
         self.color = None
 
     def modelo(self):
@@ -36,18 +39,40 @@ class Menu(tk.Tk):
         self.frame = tk.Frame(self, height=500, width=700)
         self.frame.place(x=150, y=100)
         self.frame.configure(bg="#18884A")
-        tk.Button(self.frame, text="simulación 2D", command=self.simulation_2D, height=3, width=12).place(x=300, y=150)
-        tk.Button(self.frame, text="simulación 3D", command=self.simulation_3D, height=3, width=12).place(x=300, y=250)
+        tk.Button(self.frame, text="2D Simulation", command=self.simulation_2D, height=3, width=12).place(x=300, y=150)
+        tk.Button(self.frame, text="3D simulation", command=self.simulation_3D, height=3, width=12).place(x=300, y=250)
 
     def simulation_2D(self):
         self.model = "2D"
-        self.cuerpos()
+        self.bodies()
 
     def simulation_3D(self):
         self.model = "3D"
-        self.cuerpos()
+        self.option_3d()
 
-    def cuerpos(self):
+    def option_3d(self):
+        self.clear_w()
+        self.frame = tk.Frame(self, height=500, width=700)
+        self.frame.place(x=150, y=100)
+        self.frame.configure(bg="#18884A")
+        tk.Button(self.frame, text="Configure planets", command=self.bodies, height=3, width=12).place(x=300, y=150)
+        tk.Button(self.frame, text="Random", command=self.random_configure, height=3, width=12).place(x=300, y=250)
+        tk.Button(self.frame, text="back", command=self.modelo, height=2, width=5).place(x=10, y=450)
+
+    def random_configure(self):
+        self.clear_w()
+        self.frame = tk.Frame(self, height=500, width=700)
+        self.frame.place(x=150, y=100)
+        self.frame.configure(bg="#18884A")
+        tk.Label(self.frame, text="Numero de cuerpos:", bg=self.frame["bg"],
+                 font=("ROMAN", 15)).place(x=250, y=150)
+        bodies = tk.Entry(self.frame)
+        bodies.insert(0, "50")
+        bodies.place(x=280, y=185)
+        tk.Button(self.frame, text="back", command=self.option_3d, height=2, width=5).place(x=10, y=450)
+        tk.Button(self.frame, text="next", command=self.random_bodies, height=2, width=5).place(x=645, y=450)
+
+    def bodies(self):
         self.clear_w()
         self.frame = tk.Frame(self, height=500, width=700)
         self.frame.place(x=150, y=100)
@@ -63,7 +88,13 @@ class Menu(tk.Tk):
 
     def get_body_numbers(self, bodies):
         self.n_bodies = int(bodies.get())
-        self.planets_data(self.n_bodies)
+        if self.n_bodies < 0:
+            self.modelo()
+        elif self.n_bodies < 5:
+            self.data = self.data[:self.n_bodies]
+            self.planets_data(self.n_bodies)
+        else:
+            self.planets_data(self.n_bodies)
 
     def planets_data(self, n_bodies):
         self.clear_w()
@@ -184,7 +215,10 @@ class Menu(tk.Tk):
         if self.model == "3D":
             data_color = []
             for i in range(len(self.data)):
-                self.data[i]["radius"] = ((self.data[i]["radius"] - r_min) / (r_max - r_min)) * (20-10) + 10
+                if r_max != r_min:
+                    self.data[i]["radius"] = ((self.data[i]["radius"] - r_min) / (r_max - r_min)) * (20 - 10) + 10
+                else:
+                    self.data[i]["radius"] = 10
                 data.append(Body(self.data[i]["radius"],
                                  self.data[i]["mass"] * SUN_MASS,
                                  np.array([self.data[i]["position"][0] * AU,
@@ -224,7 +258,7 @@ class Menu(tk.Tk):
         # sun
         self.data.append({"radius": 1, "mass": 1, "position": (0, 0, 0), "velocity": (0, 0, 0), "color": (255, 255, 0)})
         # earth
-        self.data.append({"radius": 6371/SUN_RADIUS, "mass": 5.972E24 / SUN_MASS, "position": (1, 0, 0),
+        self.data.append({"radius": 6371 / SUN_RADIUS, "mass": 5.972E24 / SUN_MASS, "position": (1, 0, 0),
                           "velocity": (0, 2.9E4 / xVEL, 0), "color": (0, 255, 255)})
         # mars
         self.data.append(
@@ -259,3 +293,23 @@ class Menu(tk.Tk):
     @staticmethod
     def rgb_to_hex(rgb_color):
         return '#{:02X}{:02X}{:02X}'.format(rgb_color[0], rgb_color[1], rgb_color[2])
+
+    def random_bodies(self):
+        max_distance = 500
+        min_distance = -500
+        max_vel = 20
+        min_vel = -20
+        self.data.clear()
+        print(len(self.data), " Longitud")
+        for _ in range(80):
+            self.data.append({"radius": 1, "mass": randint(1, 100000) / 100000,
+                              "position": (randint(min_distance, max_distance) / 100,
+                                           randint(min_distance, max_distance) / 100,
+                                           randint(min_distance, max_distance) / 100),
+                              "velocity": (float(randint(min_vel, max_vel)),
+                                           float(randint(min_vel, max_vel)),
+                                           float(randint(min_vel, max_vel))),
+                              "color": (255, 255, 255)})
+
+        self.model = "3D"
+        self.start_simulation()

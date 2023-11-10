@@ -74,7 +74,6 @@ class Projections(PyOGApp):
         elif i == 0 and Projections.view > 10:
             Projections.view -= 5
 
-
     def update_speed(self, i):
         if i == 1 and Projections.SPEED < 60:
             Projections.SPEED += 4
