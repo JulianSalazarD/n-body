@@ -2,6 +2,7 @@ import tkinter as tk
 from functools import partial
 from random import randint
 from tkinter import colorchooser
+from PIL import Image, ImageTk
 
 import numpy as np
 import scipy as sp
@@ -23,7 +24,6 @@ class Menu(tk.Tk):
         super().__init__()
         self.geometry("1000x800")
         self.resizable(False, False)
-        self.configure(bg="#F8883E")
         self.frame = None
         self.model = None
         self.n_bodies = None
@@ -31,14 +31,12 @@ class Menu(tk.Tk):
         self.color = None
         self.modelo()
         self.default_data()
-        # self.ramdom_bodies()
-        self.color = None
 
     def modelo(self):
         self.clear_w()
         self.frame = tk.Frame(self, height=500, width=700)
         self.frame.place(x=150, y=100)
-        self.frame.configure(bg="#18884A")
+        self.background_frame()
         tk.Button(self.frame, text="2D Simulation", command=self.simulation_2D, height=3, width=12).place(x=300, y=150)
         tk.Button(self.frame, text="3D simulation", command=self.simulation_3D, height=3, width=12).place(x=300, y=250)
 
@@ -54,7 +52,7 @@ class Menu(tk.Tk):
         self.clear_w()
         self.frame = tk.Frame(self, height=500, width=700)
         self.frame.place(x=150, y=100)
-        self.frame.configure(bg="#18884A")
+        self.background_frame()
         tk.Button(self.frame, text="Configure planets", command=self.bodies, height=3, width=12).place(x=300, y=150)
         tk.Button(self.frame, text="Random", command=self.random_configure, height=3, width=12).place(x=300, y=250)
         tk.Button(self.frame, text="back", command=self.modelo, height=2, width=5).place(x=10, y=450)
@@ -63,7 +61,7 @@ class Menu(tk.Tk):
         self.clear_w()
         self.frame = tk.Frame(self, height=500, width=700)
         self.frame.place(x=150, y=100)
-        self.frame.configure(bg="#18884A")
+        self.background_frame()
         tk.Label(self.frame, text="Numero de cuerpos:", bg=self.frame["bg"],
                  font=("ROMAN", 15)).place(x=250, y=150)
         bodies = tk.Entry(self.frame)
@@ -76,7 +74,7 @@ class Menu(tk.Tk):
         self.clear_w()
         self.frame = tk.Frame(self, height=500, width=700)
         self.frame.place(x=150, y=100)
-        self.frame.configure(bg="#18884A")
+        self.background_frame()
         tk.Label(self.frame, text="Numero de cuerpos:", bg=self.frame["bg"],
                  font=("ROMAN", 15)).place(x=250, y=150)
         bodies = tk.Entry(self.frame)
@@ -107,7 +105,7 @@ class Menu(tk.Tk):
     def configure_body_data(self, i):
         self.frame = tk.Frame(self, height=500, width=800)
         self.frame.place(x=150, y=100)
-        self.frame.configure(bg="#18884A")
+        self.background_frame()
         tk.Label(self.frame, text="Planet " + str(i + 1) + ":", bg=self.frame["bg"],
                  font=("Courier", 15)).place(x=250, y=10)
 
@@ -203,7 +201,7 @@ class Menu(tk.Tk):
         self.clear_w()
         self.frame = tk.Frame(self, height=500, width=700)
         self.frame.place(x=150, y=100)
-        self.frame.configure(bg="#18884A")
+        self.background_frame()
         tk.Button(self.frame, text="Confirm", command=self.start_simulation, height=3, width=12).place(x=300, y=150)
         tk.Button(self.frame, text="Cancel", command=self.init, height=3, width=12).place(x=300, y=250)
 
@@ -253,6 +251,7 @@ class Menu(tk.Tk):
     def clear_w(self):
         for children in self.winfo_children():
             children.destroy()
+        self.background()
 
     def default_data(self):
         # sun
@@ -313,3 +312,23 @@ class Menu(tk.Tk):
 
         self.model = "3D"
         self.start_simulation()
+
+    def background(self):
+        path = "models/background.jpg"
+        image = Image.open(path)
+        image = image.resize((1000, 800), Image.LANCZOS)
+        photo = ImageTk.PhotoImage(image)
+        background = tk.Label(self)
+        background.image = photo
+        background.configure(image=photo)
+        background.place(x=0, y=0, relwidth=1, relheight=1)
+
+    def background_frame(self):
+        path = "models/frame_background.jpg"
+        image = Image.open(path)
+        image = image.resize((800, 500), Image.LANCZOS)
+        photo = ImageTk.PhotoImage(image)
+        background = tk.Label(self.frame)
+        background.image = photo
+        background.configure(image=photo)
+        background.place(x=0, y=0, relwidth=1, relheight=1)
