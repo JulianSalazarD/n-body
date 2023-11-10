@@ -31,6 +31,7 @@ class Menu(tk.Tk):
         self.color = None
         self.modelo()
         self.default_data()
+        self.menu_init()
 
     def modelo(self):
         self.clear_w()
@@ -62,8 +63,8 @@ class Menu(tk.Tk):
         self.frame = tk.Frame(self, height=500, width=700)
         self.frame.place(x=150, y=100)
         self.background_frame()
-        tk.Label(self.frame, text="Numero de cuerpos:", bg=self.frame["bg"],
-                 font=("ROMAN", 15)).place(x=250, y=150)
+        tk.Label(self.frame, text="Number of bodies:", bg=self.frame["bg"],
+                 font=("Courier", 15)).place(x=245, y=150)
         bodies = tk.Entry(self.frame)
         bodies.insert(0, "50")
         bodies.place(x=280, y=185)
@@ -76,8 +77,8 @@ class Menu(tk.Tk):
         self.frame = tk.Frame(self, height=500, width=700)
         self.frame.place(x=150, y=100)
         self.background_frame()
-        tk.Label(self.frame, text="Numero de cuerpos:", bg=self.frame["bg"],
-                 font=("ROMAN", 15)).place(x=250, y=150)
+        tk.Label(self.frame, text="Number of bodies:", bg=self.frame["bg"],
+                 font=("Courier", 15)).place(x=245, y=150)
         bodies = tk.Entry(self.frame)
         bodies.insert(0, "5")
         bodies.place(x=280, y=185)
@@ -96,7 +97,7 @@ class Menu(tk.Tk):
             else:
                 self.planets_data(self.n_bodies)
         except ValueError:
-            msg = "Ingresar todos los campos debidamente"
+            msg = "Fill out all fields correctly"
             messagebox.showerror("ValueError", msg)
             self.bodies()
 
@@ -187,8 +188,6 @@ class Menu(tk.Tk):
             self.planets_data(self.n_bodies - i + 1)
 
     def get_body_data(self, planet_data, i):
-        # msg = "Ingresas todos los campos"
-        # messagebox.showerror("ValueError", msg)
         try:
             body_data = {"radius": float(planet_data[0].get()),
                          "mass": float(planet_data[1].get()),
@@ -206,7 +205,7 @@ class Menu(tk.Tk):
 
             self.planets_data(self.n_bodies - i - 1)
         except ValueError:
-            msg = "Ingresar todos los campos debidamente"
+            msg = "Fill out all fields correctly"
             messagebox.showerror("ValueError", msg)
             self.planets_data(self.n_bodies - i)
 
@@ -265,6 +264,7 @@ class Menu(tk.Tk):
         for children in self.winfo_children():
             children.destroy()
         self.background()
+        self.menu_init()
 
     def default_data(self):
         # sun
@@ -314,7 +314,6 @@ class Menu(tk.Tk):
             max_vel = 20
             min_vel = -20
             self.data.clear()
-            print(len(self.data), " Longitud")
             for _ in range(self.n_bodies):
                 self.data.append({"radius": 1, "mass": randint(1, 100000) / 100000,
                                   "position": (randint(min_distance, max_distance) / 100,
@@ -327,9 +326,9 @@ class Menu(tk.Tk):
 
             self.model = "3D"
             self.start_simulation()
-            
+
         except ValueError:
-            msg = "Ingresar todos los campos debidamente"
+            msg = "Fill out all fields correctly"
             messagebox.showerror("ValueError", msg)
             self.random_configure()
 
@@ -352,3 +351,43 @@ class Menu(tk.Tk):
         background.image = photo
         background.configure(image=photo)
         background.place(x=0, y=0, relwidth=1, relheight=1)
+
+    def menu_init(self):
+        menuBar = tk.Menu(self, activebackground="#4F53CE", activeforeground="white")
+        self.config(menu=menuBar)
+
+        menu = tk.Menu(menuBar, activebackground="#4F53CE", activeforeground="white", tearoff=False)
+        menuBar.add_cascade(label="Menu", menu=menu)
+        menu.add_command(label="Guide", command=self.description)
+        menu.add_command(label="Exit", command=self.exit)
+
+    def description(self):
+        self.clear_w()
+        info = (
+                "2D/3D simulation:\n\n"
+                "Up arrow key/scroll up: increase space.\n"
+                "Down arrow key/scroll down: decrease space.\n"
+                "Rignt arrow key: increase speed simulation.\n"
+                "Left arrow key: decreese speed simulation.\n"
+        )
+        info_3d = (
+            "3D camera movement:\n\n"
+            "W key: go front.\n"
+            "S key: go back.\n"
+            "A key: go left.\n"
+            "D key: go right.\n"
+            "Mouse: change vision of the environment.\n"
+            "ESC key: deactivate camera movement.\n"
+            "ENTER key: activate camera movement."
+        )
+        tk.Label(self, text=info, bg="#0c76f7",
+                 font=("Courier", 15)).place(x=290, y=100)
+        tk.Label(self, text=info_3d, bg="#0c76f7",
+                 font=("Courier", 15)).place(x=310, y=300)
+        tk.Button(self, text="back", command=self.init, height=2,
+                  width=5).place(x=100, y=580)
+
+    def exit(self):
+        option = messagebox.askokcancel("Exit", "Close window")
+        if option:
+            self.destroy()
