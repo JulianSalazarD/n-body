@@ -22,6 +22,7 @@ class Menu(tk.Tk):
 
     def __init__(self):
         super().__init__()
+        self.title("Gravity simulator")
         self.geometry("1000x800")
         self.resizable(False, False)
         self.frame = None
@@ -76,8 +77,8 @@ class Menu(tk.Tk):
     def get_body_numbers(self, bodies):
         try:
             self.n_bodies = int(bodies.get())
-            if self.n_bodies < 0:
-                self.modelo()
+            if self.n_bodies <= 0:
+                raise ValueError
             elif self.n_bodies < 5:
                 self.data = self.data[:self.n_bodies]
                 self.planets_data(self.n_bodies)
@@ -185,6 +186,8 @@ class Menu(tk.Tk):
                                       float(planet_data[3][1].get()),
                                       float(planet_data[3][2].get())),
                          "color": Menu.hex_to_rgb(self.color["bg"])}
+            if body_data["radius"] <= 0:
+                raise ValueError
             if i < len(self.data):
                 self.data[i] = body_data
             else:
@@ -222,11 +225,14 @@ class Menu(tk.Tk):
     def random_bodies(self, bodies):
         try:
             self.n_bodies = int(bodies.get())
+            if self.n_bodies <= 0:
+                raise ValueError
             max_distance = 500
             min_distance = -500
             max_vel = 20
             min_vel = -20
             self.data.clear()
+
             for _ in range(self.n_bodies):
                 self.data.append({"radius": 1, "mass": randint(1, 100000) / 100000,
                                   "position": (randint(min_distance, max_distance) / 100,

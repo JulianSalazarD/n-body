@@ -2,7 +2,7 @@ import scipy as sp
 
 from sim3d.Axes import *
 from sim3d.LoadMesh import *
-from sim3d.PyOGApp import *
+from uiMain.PyOGApp import *
 
 vertex_shader = r'''
 #version 330 core
@@ -46,6 +46,7 @@ class Projections(PyOGApp):
         self.max_r = 20
         self.min_r = 10
 
+    # Se inicializan los objetos necesarios
     def initialise(self):
         self.program_id = create_program(vertex_shader, fragment_shader)
         self.axes = Axes(self.program_id, pygame.Vector3(0, 0, 0))
@@ -53,6 +54,7 @@ class Projections(PyOGApp):
         glEnable(GL_DEPTH_TEST)
         self.build_sphere()
 
+    # Actuallizar y renderizar la escena
     def display(self):
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
         glUseProgram(self.program_id)
@@ -64,18 +66,21 @@ class Projections(PyOGApp):
         self.update_position()
         self.update_window()
 
+    # cambiar la escala de vista
     def view_scale(self, i):
         if i == 1 and Projections.view < 500:
             Projections.view += 5
         elif i == 0 and Projections.view > 10:
             Projections.view -= 5
 
+    # cambiar la velocidad de los cuerpos en la simulacion
     def update_speed(self, i):
         if i == 1 and Projections.SPEED < 60:
             Projections.SPEED += 4
         elif i == 0 and Projections.SPEED > 4:
             Projections.SPEED -= 4
 
+    # Crear cuerpos según los datos astronomicos ingresados
     def build_sphere(self):
         for i in range(len(self.data)):
             sc = self.data[i].radius
@@ -87,10 +92,12 @@ class Projections(PyOGApp):
                                         move_rotation=Rotation(1, pygame.Vector3(0, 1, 0)),
                                         color=self.data_color[i]))
 
+    # Actualizar la posición de olos cuerpos
     def update_position(self):
         for body in self.data:
             body.euler_method(self.data, 60. * 60. * Projections.SPEED)
 
+    # Actualizar la posición de los cuerpos en la escena
     def update_window(self):
         for body in range(len(self.data)):
             self.positions[body] = self.data[body].position.copy() * Projections.SCALE

@@ -1,5 +1,5 @@
 from pygame.locals import *
-from .camera import *
+from sim3d.camera import *
 import os
 
 
