@@ -2,6 +2,7 @@ import numpy as np
 import scipy as sp
 
 
+# Representar un curpo
 class Body:
     def __init__(self, radius, mass, position, velocity):
         self.radius = radius
@@ -10,6 +11,7 @@ class Body:
         self.velocity = velocity
         self.r = 0
 
+    # Actualizar posición
     def euler_method(self, bodies, dt):
         self.position += self.velocity * dt
         acc = self.update_acceleration(bodies)
@@ -25,6 +27,3 @@ class Body:
     def gravitational_acceleration(self, body):
         diff = body.position - self.position
         return sp.constants.G * body.mass * (diff / (np.linalg.norm(diff) ** 3))
-
-    def circular(self):
-        pass

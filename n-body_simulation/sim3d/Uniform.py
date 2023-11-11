@@ -1,6 +1,7 @@
 from OpenGL.GL import *
 
 
+# cargar y configurar variables en OpenGL
 class Uniform:
     def __init__(self, data_type, data):
         self.data_type = data_type

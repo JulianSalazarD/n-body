@@ -2,12 +2,12 @@ from .Mesh import *
 from .Utils import *
 
 
+# Cargar objeto 3d de un archivo
 class LoadMesh(Mesh):
 
     def __init__(self, filename, program_id, draw_type=GL_TRIANGLES, location=pygame.Vector3(0, 0, 0),
                  rotation=Rotation(0, pygame.Vector3(0, 1, 0)), scale=pygame.Vector3(1, 1, 1),
-                 move_rotation=Rotation(0, pygame.Vector3(0, 1, 0)), move_translate=pygame.Vector3(0, 0, 0),
-                 move_scale=pygame.Vector3(1, 1, 1), color=(1, 1, 1)):
+                 move_rotation=Rotation(0, pygame.Vector3(0, 1, 0)), color=(1, 1, 1)):
         if color is None:
             color = []
         coordinates, triangles = self.load_drawing(filename)
@@ -17,8 +17,7 @@ class LoadMesh(Mesh):
             colors.append(color[0])
             colors.append(color[1])
             colors.append(color[2])
-        super().__init__(program_id, vertices, colors, draw_type, location, rotation, scale, move_rotation,
-                         move_translate, move_scale)
+        super().__init__(program_id, vertices, colors, draw_type, location, rotation, scale, move_rotation)
 
     def load_drawing(self, filename):
         vertices = []

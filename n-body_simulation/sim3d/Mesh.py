@@ -5,11 +5,11 @@ from .Uniform import *
 from .Transformation import *
 
 
+# Dibujar objeto 3d en pantalla
 class Mesh:
     def __init__(self, program_id, vertices, vertex_colors, draw_type, translation=pygame.Vector3(0.0, 0.0, 0.0),
                  rotation=Rotation(0, pygame.Vector3(0, 1, 0)), scale=pygame.Vector3(1, 1, 1),
-                 move_rotation=Rotation(0, pygame.Vector3(0, 1, 0)), move_translate=pygame.Vector3(0, 0, 0),
-                 move_scale=pygame.Vector3(1, 1, 1)):
+                 move_rotation=Rotation(0, pygame.Vector3(0, 1, 0))):
         self.vertices = vertices
         self.draw_type = draw_type
         self.vao_ref = glGenVertexArrays(1)

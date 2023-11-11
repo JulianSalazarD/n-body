@@ -4,6 +4,7 @@ from .Transformation import *
 from .Uniform import *
 
 
+# Perspectiva del observador
 class Camera:
     def __init__(self, program_id, w, h):
         self.transformation = identity_matrix()
@@ -19,6 +20,7 @@ class Camera:
         self.program_id = program_id
         self.transformation = translate(self.transformation, 0, 0, 2500)
 
+    # Actualizar posicion de la camera
     def perspective_mat(self, angle_of_view, aspect_ratio, near_plane, far_plane):
         a = radians(angle_of_view)
         d = 1.0 / tan(a / 2.0)

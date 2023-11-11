@@ -18,6 +18,7 @@ class Simulation:
         self.win = pygame.display.set_mode((self.WIDTH, self.HEIGHT))
         pygame.display.set_caption("Planet Simulation")
 
+    # Dbijar planetas
     def draw(self, planet):
         x = planet.position[0] * Simulation.SCALE + self.WIDTH / 2
         y = planet.position[1] * Simulation.SCALE + self.HEIGHT / 2
@@ -40,6 +41,7 @@ class Simulation:
         while run:
             clock.tick(120)
             self.win.fill((0, 0, 0))
+            # Eventos para disminuir/aumentar velocidad o espacio entre cuerpos
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     run = False
@@ -59,6 +61,7 @@ class Simulation:
                         Simulation.view -= 5
                 Simulation.SCALE = Simulation.view / sp.constants.astronomical_unit
 
+            # Actualizar posicion de los cuerpos
             for planet in self.data:
                 self.draw(planet)
                 planet.euler_method(self.data, 60. * 60. * Simulation.SPEED)

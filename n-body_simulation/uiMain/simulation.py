@@ -53,9 +53,6 @@ class Projections(PyOGApp):
         glEnable(GL_DEPTH_TEST)
         self.build_sphere()
 
-    def camera_init(self):
-        pass
-
     def display(self):
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
         glUseProgram(self.program_id)
@@ -66,7 +63,6 @@ class Projections(PyOGApp):
         Projections.SCALE = Projections.view / sp.constants.astronomical_unit
         self.update_position()
         self.update_window()
-        # glLineWidth(1)
 
     def view_scale(self, i):
         if i == 1 and Projections.view < 500:

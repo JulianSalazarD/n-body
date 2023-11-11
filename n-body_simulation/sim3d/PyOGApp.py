@@ -3,6 +3,7 @@ from .camera import *
 import os
 
 
+# configuracion pantall modelo 3d
 class PyOGApp:
     def __init__(self, screen_width, screen_height):
         os.environ['SDL_VIDEO_CENTERED'] = '1'
@@ -23,9 +24,6 @@ class PyOGApp:
         pass
 
     def display(self):
-        pass
-
-    def camera_init(self):
         pass
 
     def mainloop(self):
@@ -63,7 +61,6 @@ class PyOGApp:
                     elif event.button == 5:
                         self.view_scale(0)
 
-            self.camera_init()
             self.display()
             pygame.display.flip()
             self.clock.tick(30)

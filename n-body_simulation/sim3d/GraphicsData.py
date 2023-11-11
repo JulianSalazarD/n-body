@@ -2,6 +2,7 @@ from OpenGL.GL import *
 import numpy as np
 
 
+# crear y configur buffers
 class GraphicsData:
     def __init__(self, data_type, data):
         self.data_type = data_type

@@ -1,6 +1,7 @@
 from .Mesh import *
 
 
+# Mostar ejex x y z
 class Axes(Mesh):
     def __init__(self, program_id, location):
         vertices = [[-25000.0, 0.0, 0.0],

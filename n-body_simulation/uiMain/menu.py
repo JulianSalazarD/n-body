@@ -33,6 +33,7 @@ class Menu(tk.Tk):
         self.default_data()
         self.menu_init()
 
+    # Configuracion de simulación
     def modelo(self):
         self.clear_w()
         self.frame = tk.Frame(self, height=500, width=700)
@@ -57,20 +58,6 @@ class Menu(tk.Tk):
         tk.Button(self.frame, text="Configure planets", command=self.bodies, height=3, width=12).place(x=300, y=150)
         tk.Button(self.frame, text="Random", command=self.random_configure, height=3, width=12).place(x=300, y=250)
         tk.Button(self.frame, text="back", command=self.modelo, height=2, width=5).place(x=10, y=450)
-
-    def random_configure(self):
-        self.clear_w()
-        self.frame = tk.Frame(self, height=500, width=700)
-        self.frame.place(x=150, y=100)
-        self.background_frame()
-        tk.Label(self.frame, text="Number of bodies:", bg=self.frame["bg"],
-                 font=("Courier", 15)).place(x=245, y=150)
-        bodies = tk.Entry(self.frame)
-        bodies.insert(0, "50")
-        bodies.place(x=280, y=185)
-        tk.Button(self.frame, text="back", command=self.option_3d, height=2, width=5).place(x=10, y=450)
-        tk.Button(self.frame, text="next", command=partial(self.random_bodies, bodies),
-                  height=2, width=5).place(x=645, y=450)
 
     def bodies(self):
         self.clear_w()
@@ -217,6 +204,48 @@ class Menu(tk.Tk):
         tk.Button(self.frame, text="Confirm", command=self.start_simulation, height=3, width=12).place(x=300, y=150)
         tk.Button(self.frame, text="Cancel", command=self.init, height=3, width=12).place(x=300, y=250)
 
+    # Simulación aleatoria
+    def random_configure(self):
+        self.clear_w()
+        self.frame = tk.Frame(self, height=500, width=700)
+        self.frame.place(x=150, y=100)
+        self.background_frame()
+        tk.Label(self.frame, text="Number of bodies:", bg=self.frame["bg"],
+                 font=("Courier", 15)).place(x=245, y=150)
+        bodies = tk.Entry(self.frame)
+        bodies.insert(0, "50")
+        bodies.place(x=280, y=185)
+        tk.Button(self.frame, text="back", command=self.option_3d, height=2, width=5).place(x=10, y=450)
+        tk.Button(self.frame, text="next", command=partial(self.random_bodies, bodies),
+                  height=2, width=5).place(x=645, y=450)
+
+    def random_bodies(self, bodies):
+        try:
+            self.n_bodies = int(bodies.get())
+            max_distance = 500
+            min_distance = -500
+            max_vel = 20
+            min_vel = -20
+            self.data.clear()
+            for _ in range(self.n_bodies):
+                self.data.append({"radius": 1, "mass": randint(1, 100000) / 100000,
+                                  "position": (randint(min_distance, max_distance) / 100,
+                                               randint(min_distance, max_distance) / 100,
+                                               randint(min_distance, max_distance) / 100),
+                                  "velocity": (float(randint(min_vel, max_vel)),
+                                               float(randint(min_vel, max_vel)),
+                                               float(randint(min_vel, max_vel))),
+                                  "color": (255, 255, 255)})
+
+            self.model = "3D"
+            self.start_simulation()
+
+        except ValueError:
+            msg = "Fill out all fields correctly"
+            messagebox.showerror("ValueError", msg)
+            self.random_configure()
+
+    # Iniciar simulación
     def start_simulation(self):
         data = []
         r_max = max(self.data, key=lambda x: x["radius"])["radius"]
@@ -260,12 +289,14 @@ class Menu(tk.Tk):
             self.destroy()
             Simulation(data).mainloop()
 
+    # Limpiar ventana
     def clear_w(self):
         for children in self.winfo_children():
             children.destroy()
         self.background()
         self.menu_init()
 
+    # Datos por defecto e iniciales
     def default_data(self):
         # sun
         self.data.append({"radius": 1, "mass": 1, "position": (0, 0, 0), "velocity": (0, 0, 0), "color": (255, 255, 0)})
@@ -293,6 +324,7 @@ class Menu(tk.Tk):
         self.modelo()
         self.default_data()
 
+    # Seleccion de colores
     def choose_color(self):
         color = colorchooser.askcolor()[1]
         self.color.configure(bg=color)
@@ -306,32 +338,7 @@ class Menu(tk.Tk):
     def rgb_to_hex(rgb_color):
         return '#{:02X}{:02X}{:02X}'.format(rgb_color[0], rgb_color[1], rgb_color[2])
 
-    def random_bodies(self, bodies):
-        try:
-            self.n_bodies = int(bodies.get())
-            max_distance = 500
-            min_distance = -500
-            max_vel = 20
-            min_vel = -20
-            self.data.clear()
-            for _ in range(self.n_bodies):
-                self.data.append({"radius": 1, "mass": randint(1, 100000) / 100000,
-                                  "position": (randint(min_distance, max_distance) / 100,
-                                               randint(min_distance, max_distance) / 100,
-                                               randint(min_distance, max_distance) / 100),
-                                  "velocity": (float(randint(min_vel, max_vel)),
-                                               float(randint(min_vel, max_vel)),
-                                               float(randint(min_vel, max_vel))),
-                                  "color": (255, 255, 255)})
-
-            self.model = "3D"
-            self.start_simulation()
-
-        except ValueError:
-            msg = "Fill out all fields correctly"
-            messagebox.showerror("ValueError", msg)
-            self.random_configure()
-
+    # Fondos de pantalla
     def background(self):
         path = "models/background.jpg"
         image = Image.open(path)
@@ -352,6 +359,7 @@ class Menu(tk.Tk):
         background.configure(image=photo)
         background.place(x=0, y=0, relwidth=1, relheight=1)
 
+    # Barra menu
     def menu_init(self):
         menuBar = tk.Menu(self, activebackground="#4F53CE", activeforeground="white")
         self.config(menu=menuBar)
@@ -364,11 +372,11 @@ class Menu(tk.Tk):
     def description(self):
         self.clear_w()
         info = (
-                "2D/3D simulation:\n\n"
-                "Up arrow key/scroll up: increase space.\n"
-                "Down arrow key/scroll down: decrease space.\n"
-                "Rignt arrow key: increase speed simulation.\n"
-                "Left arrow key: decreese speed simulation.\n"
+            "2D/3D simulation:\n\n"
+            "Up arrow key/scroll up: increase space.\n"
+            "Down arrow key/scroll down: decrease space.\n"
+            "Rignt arrow key: increase speed simulation.\n"
+            "Left arrow key: decreese speed simulation.\n"
         )
         info_3d = (
             "3D camera movement:\n\n"

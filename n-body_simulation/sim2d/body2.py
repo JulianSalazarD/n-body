@@ -1,15 +1,11 @@
-import numpy as np
-import scipy as sp
+from sim3d.body import Body
 
 
-class Body2:
+# Representar un curpo para simulacon 2d
+class Body2(Body):
     def __init__(self, radius, mass, position, velocity, color):
-        self.radius = radius
-        self.mass = mass
-        self.position = position
-        self.velocity = velocity
+        super().__init__(radius, mass, position, velocity)
         self.r = 0
-        self.bigger = False
         self.orbit = []
         self.color = color
 
@@ -20,18 +16,6 @@ class Body2:
 
         self.orbit.append((self.position[0], self.position[1]))
 
-        if (abs(self.orbit[0][0] - self.orbit[-1][0]) < 1 and abs(self.orbit[0][1] - self.orbit[-1][1]) < 1
+        if (abs(self.orbit[0][0] - self.orbit[-1][0]) < 100000 and abs(self.orbit[0][1] - self.orbit[-1][1]) < 100000
                 and len(self.orbit) > 2):
             self.orbit.clear()
-            print(len(self.orbit))
-
-    def update_acceleration(self, bodies):
-        acceleration = 0.0
-        for body in bodies:
-            if np.any(body.position != self.position):
-                acceleration += self.gravitational_acceleration(body)
-        return acceleration
-
-    def gravitational_acceleration(self, body):
-        diff = body.position - self.position
-        return sp.constants.G * body.mass * (diff / (np.linalg.norm(diff) ** 3))

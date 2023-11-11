@@ -2,6 +2,7 @@ import numpy as np
 from math import *
 
 
+# Operaciones para actualizar posicion de los objetos en el espacio
 class Rotation:
     def __init__(self, angle, axis):
         self.angle = angle
